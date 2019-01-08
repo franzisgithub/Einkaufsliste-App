@@ -14,7 +14,7 @@ public class Accounterstellen extends AppCompatActivity {
         String intentText = "";
         if (aufruf.getExtras() != null) {
             intentText =
-                    aufruf.getExtras().get("NEXTACTIVITY").toString();
+                    aufruf.getExtras().get("NEXTACTIVITY").toString() ;
         }
     }
 }
