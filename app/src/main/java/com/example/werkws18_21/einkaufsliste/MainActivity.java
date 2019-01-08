@@ -22,9 +22,12 @@ public class MainActivity extends AppCompatActivity {
         buttonAcc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(this, Accounterstellen.class);
-                EditText editText = (EditText) findViewById(R.id.editText);
-                startActivity(intent);
+                String intentText = "New Activity";
+                Intent meinIntent =
+                        new Intent(MainActivity.this, Accounterstellen.class);
+                meinIntent.putExtra("NEXTACTIVITY",intentText);
+                // zur Activity die im Intent benannt wurde wechseln
+                startActivity(meinIntent);
             }
         });
     }
