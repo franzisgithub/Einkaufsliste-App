@@ -10,5 +10,7 @@ public class Accounterstellen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_accounterstellen);
         Intent intent = getIntent();
+
+
     }
 }
