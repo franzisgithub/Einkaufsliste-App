@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class Liste extends AppCompatActivity {
 
-    private static final String TAG = "Error";
+    private static final String TAG = "MyTag";
     //db als Instanz für die Datenbank im firestore
     FirebaseFirestore db;
 
