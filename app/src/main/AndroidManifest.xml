@@ -16,7 +16,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Accounterstellen"></activity>
+        <activity android:name=".Accounterstellen" />
+        <activity android:name=".Liste" />
+        <activity android:name=".Gruppenauswahl" />
+        <activity android:name=".AccountSettings" />
+        <activity android:name=".GruppenManager" />
+        <activity android:name=".Gps"></activity>
     </application>
 
 </manifest>
