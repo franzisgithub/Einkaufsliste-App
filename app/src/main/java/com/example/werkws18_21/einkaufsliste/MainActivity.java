@@ -19,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
         Button buttonAcc = findViewById(R.id.button);
         Button buttonP= findViewById(R.id.button2);
 
+        //TODO: irgendwie ist beim App öffnen immer als erstes das Passwort eingabefeld aktiv
+
         buttonAcc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
