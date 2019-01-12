@@ -35,9 +35,23 @@ public class MainActivity extends AppCompatActivity {
         EditText passwort= findViewById(R.id.eT_Passwort);
         Button buttonAcc = findViewById(R.id.button);
         Button buttonP= findViewById(R.id.button2);
+        Button login = findViewById(R.id.button4);
 
         //Instanz der Firebase Authentifikation
         mAuth =FirebaseAuth.getInstance();
+
+
+        // Wechseln über erfolgreichen login zur Gruppen/Listenauswahl
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String intentText = "New Activity";
+                Intent toGroupSet =
+                        new Intent(MainActivity.this, Gruppenauswahl.class);
+                toGroupSet.putExtra("NEXTACTIVITY", intentText);
+                startActivity(toGroupSet);
+            }
+        });
 
         //TODO: irgendwie ist beim App öffnen immer als erstes das Passwort eingabefeld aktiv
 

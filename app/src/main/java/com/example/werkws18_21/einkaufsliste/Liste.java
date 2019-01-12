@@ -1,10 +1,18 @@
 package com.example.werkws18_21.einkaufsliste;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -19,6 +27,15 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 
 public class Liste extends AppCompatActivity {
+
+    // Listen, Buttons und ArrayList
+    //TODO: ArrayList für die Beispiele erstellen und Funktion zum hinzufügen machen
+    private ListView listView;
+    private ListView listView2;
+    private EditText eingabe;
+    private Button adden;
+    private ArrayList<String> itemList;
+    private ArrayAdapter<String> adapter;
 
     private static final String TAG = "MyTag";
     //db als Instanz für die Datenbank im firestore
@@ -38,14 +55,61 @@ public class Liste extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_liste);
 
+        // Intent aus der Gruppenauswahl
+        Intent toGroup = getIntent();
+        String intentText = "";
+        if (toGroup.getExtras() != null) {
+            intentText =
+                    toGroup.getExtras().get("NEXTACTIVITY").toString();
+
         //db als Instanz für die Datenbank im firestore
         FirebaseFirestore.getInstance();
     }
 
+    //ListView der zu kaufenden Sachen
+        listView=(ListView)findViewById(R.id.listView);
+
+        final ArrayList<String> itemList=new ArrayList<>();
+        eingabe = (EditText) findViewById(R.id.Eingabe);
+        adden = (Button) findViewById(R.id.button10);
+        final ArrayAdapter<String>adapter ;
+
+        // adapter mit den drei Parametern
+        adapter= new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_spinner_item,itemList);
+        // data setzen in der ListView
+        listView.setAdapter(adapter);
+
     //aufruf soll ausgewähltes oder eingegebenes Item zur ausgewählten Liste hinzufügen
-    public void addItem(View view) {
-        //TODO
+        // war vorher addItem Funktion
+    adden.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            itemList.add(eingabe.getText().toString());
+            adapter.notifyDataSetChanged();
+        }
+        });
+
+        //Funktion zum entfernen von Items
+        //TODO: MyDataObject ist die Datenbank musst du dann noch umbenennen und einfügen
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AlertDialog.Builder adb=new AlertDialog.Builder(Liste.this);
+                adb.setTitle("Delete?");
+                adb.setMessage("Möchten sie das Produkt entfernen?" + position);
+                final int positionToRemove = position;
+                adb.setNegativeButton("Zurück", null);
+                adb.setPositiveButton("Ok", new AlertDialog.OnClickListener(){
+                    public void onClick(DialogInterface dialog,int which){
+                        MyDataObject.remove(positionToRemove);
+                        adapter.notifyDataSetChanged();
+                    }});
+                adb.show();
+            }
+        });
     }
+
+
 
     //aufrufen, um Items in ausgewählter Liste herunterzuladen
     public void getItems(View view) {
