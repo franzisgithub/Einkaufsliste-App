@@ -24,6 +24,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Liste extends AppCompatActivity {
@@ -34,8 +35,7 @@ public class Liste extends AppCompatActivity {
     private ListView listView2;
     private EditText eingabe;
     private Button adden;
-    private ArrayList<String> itemList;
-    private ArrayAdapter<String> adapter;
+
 
     private static final String TAG = "MyTag";
     //db als Instanz für die Datenbank im firestore
@@ -62,53 +62,76 @@ public class Liste extends AppCompatActivity {
             intentText =
                     toGroup.getExtras().get("NEXTACTIVITY").toString();
 
-        //db als Instanz für die Datenbank im firestore
-        FirebaseFirestore.getInstance();
-    }
+            //db als Instanz für die Datenbank im firestore
+            FirebaseFirestore.getInstance();
+        }
 
-    //ListView der zu kaufenden Sachen
-        listView=(ListView)findViewById(R.id.listView);
+        //ListView der zu kaufenden Sachen
+        listView = (ListView) findViewById(R.id.listView);
+        listView2 = (ListView) findViewById(R.id.ListView2);
 
-        final ArrayList<String> itemList=new ArrayList<>();
+        final ArrayList<String> itemList = new ArrayList<>();
+        final ArrayList<String> beispielList = new ArrayList<>();
         eingabe = (EditText) findViewById(R.id.Eingabe);
         adden = (Button) findViewById(R.id.button10);
-        final ArrayAdapter<String>adapter ;
+        final ArrayAdapter<String> adapter;
+        final ArrayAdapter<String> adapter1;
 
         // adapter mit den drei Parametern
-        adapter= new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_spinner_item,itemList);
+        adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, itemList);
+        adapter1 = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, beispielList);
         // data setzen in der ListView
         listView.setAdapter(adapter);
-
-    //aufruf soll ausgewähltes oder eingegebenes Item zur ausgewählten Liste hinzufügen
+        listView2.setAdapter(adapter1);
+        //aufruf soll ausgewähltes oder eingegebenes Item zur ausgewählten Liste hinzufügen
         // war vorher addItem Funktion
-    adden.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            itemList.add(eingabe.getText().toString());
-            adapter.notifyDataSetChanged();
-        }
+        adden.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                itemList.add(eingabe.getText().toString());
+                adapter.notifyDataSetChanged();
+            }
         });
 
         //Funktion zum entfernen von Items
         //TODO: MyDataObject ist die Datenbank musst du dann noch umbenennen und einfügen
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AlertDialog.Builder adb=new AlertDialog.Builder(Liste.this);
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+
+                AlertDialog.Builder adb = new AlertDialog.Builder(Liste.this);
                 adb.setTitle("Delete?");
                 adb.setMessage("Möchten sie das Produkt entfernen?" + position);
                 final int positionToRemove = position;
                 adb.setNegativeButton("Zurück", null);
-                adb.setPositiveButton("Ok", new AlertDialog.OnClickListener(){
-                    public void onClick(DialogInterface dialog,int which){
-                        //MyDataObject.remove(positionToRemove);
+                adb.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        beispielList.add(0,itemList.get(position));
+                        adapter1.notifyDataSetChanged();
+                        itemList.remove(positionToRemove);
                         adapter.notifyDataSetChanged();
-                    }});
+                    }
+                });
                 adb.show();
             }
         });
-    }
+        listView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
 
+                final int positionToRemove = position;
+
+
+                        itemList.add(beispielList.get(position));
+                        adapter1.notifyDataSetChanged();
+                        beispielList.remove(positionToRemove);
+                        adapter.notifyDataSetChanged();
+
+
+
+            }
+        });
+    }
 
 
     //aufrufen, um Items in ausgewählter Liste herunterzuladen
@@ -138,7 +161,7 @@ public class Liste extends AppCompatActivity {
                 }
             }
         });
-        for(String x : mListIds){
+        for (String x : mListIds) {
             DocumentReference ref = db.collection(LIST_COLLECTION).document(x);
             ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -151,4 +174,4 @@ public class Liste extends AppCompatActivity {
         }
 
     }
-    }
+}
