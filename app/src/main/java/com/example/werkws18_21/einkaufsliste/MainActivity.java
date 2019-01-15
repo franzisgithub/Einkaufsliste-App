@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         buttonAcc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 String intentText = "New Activity";
                 Intent meinIntent =
                         new Intent(MainActivity.this, Accounterstellen.class);
