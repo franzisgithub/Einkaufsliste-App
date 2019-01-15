@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "130480991669",
+    "firebase_url": "https://einkaufsliste1.firebaseio.com",
+    "project_id": "einkaufsliste1",
+    "storage_bucket": "einkaufsliste1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:130480991669:android:e994061089027f5d",
+        "android_client_info": {
+          "package_name": "com.example.werkws18_21.einkaufsliste"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "130480991669-dd2jt0dpq7ke1q898cpe2iousmbe3tnc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0JX6mkVDwV3wnV5pCEcF3C_-oaISZvEU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
