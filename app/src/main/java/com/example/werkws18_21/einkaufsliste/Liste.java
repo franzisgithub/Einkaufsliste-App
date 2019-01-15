@@ -101,7 +101,7 @@ public class Liste extends AppCompatActivity {
                 adb.setNegativeButton("Zurück", null);
                 adb.setPositiveButton("Ok", new AlertDialog.OnClickListener(){
                     public void onClick(DialogInterface dialog,int which){
-                        MyDataObject.remove(positionToRemove);
+                        //MyDataObject.remove(positionToRemove);
                         adapter.notifyDataSetChanged();
                     }});
                 adb.show();
