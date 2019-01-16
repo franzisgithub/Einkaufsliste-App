@@ -7,7 +7,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -24,7 +26,6 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Liste extends AppCompatActivity {
@@ -67,7 +68,7 @@ public class Liste extends AppCompatActivity {
         }
 
         //ListView der zu kaufenden Sachen
-        listView = (ListView) findViewById(R.id.listView);
+        listView = (ListView) findViewById(R.id.ListView);
         listView2 = (ListView) findViewById(R.id.ListView2);
 
         final ArrayList<String> itemList = new ArrayList<>();
@@ -77,6 +78,10 @@ public class Liste extends AppCompatActivity {
         final ArrayAdapter<String> adapter;
         final ArrayAdapter<String> adapter1;
 
+        /*adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, itemList){
+          public View getView(int position, View convertView, ViewGroup parent);
+              itemList.setTextSize(TypedValue.COMPLEX_UNIT_DIP,18);
+        };*/
         // adapter mit den drei Parametern
         adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, itemList);
         adapter1 = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, beispielList);
@@ -90,29 +95,40 @@ public class Liste extends AppCompatActivity {
             public void onClick(View v) {
                 itemList.add(eingabe.getText().toString());
                 adapter.notifyDataSetChanged();
+                eingabe.getText().clear();
             }
         });
 
+
+
+        listView2.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                AlertDialog.Builder adb = new AlertDialog.Builder(Liste.this);
+                adb.setTitle("Delete?");
+                adb.setMessage("Möchten sie das Produkt entfernen?");
+                final int positionToRemove = position;
+                adb.setNegativeButton("Zurück", null);
+                adb.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        beispielList.remove(positionToRemove);
+                        adapter1.notifyDataSetChanged();
+                    }
+                });
+                adb.show();
+                return true;
+            }
+        });
         //Funktion zum entfernen von Items
         //TODO: MyDataObject ist die Datenbank musst du dann noch umbenennen und einfügen
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-
-                AlertDialog.Builder adb = new AlertDialog.Builder(Liste.this);
-                adb.setTitle("Delete?");
-                adb.setMessage("Möchten sie das Produkt entfernen?" + position);
                 final int positionToRemove = position;
-                adb.setNegativeButton("Zurück", null);
-                adb.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        beispielList.add(0,itemList.get(position));
-                        adapter1.notifyDataSetChanged();
-                        itemList.remove(positionToRemove);
-                        adapter.notifyDataSetChanged();
-                    }
-                });
-                adb.show();
+                beispielList.add(0, itemList.get(position));
+                adapter1.notifyDataSetChanged();
+                itemList.remove(positionToRemove);
+                adapter.notifyDataSetChanged();
             }
         });
         listView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -122,11 +138,10 @@ public class Liste extends AppCompatActivity {
                 final int positionToRemove = position;
 
 
-                        itemList.add(beispielList.get(position));
-                        adapter1.notifyDataSetChanged();
-                        beispielList.remove(positionToRemove);
-                        adapter.notifyDataSetChanged();
-
+                itemList.add(beispielList.get(position));
+                beispielList.remove(positionToRemove);
+                adapter1.notifyDataSetChanged();
+                adapter.notifyDataSetChanged();
 
 
             }
