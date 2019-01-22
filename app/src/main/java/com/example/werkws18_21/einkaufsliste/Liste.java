@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -55,6 +56,28 @@ public class Liste extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_liste);
+
+        //Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        //setSupportActionBar(myToolbar);
+
+        /*public boolean onOptionsItemSelected(myToolbar item) {
+            switch (myToolbar.getItemId()) {
+                case R.id.action_settings:
+                    // User chose the "Settings" item, show the app settings UI...
+                    return true;
+
+                case R.id.Account_settings:
+                    // User chose the "Favorite" action, mark the current item
+                    // as a favorite...
+                    return true;
+
+                default:
+                    // If we got here, the user's action was not recognized.
+                    // Invoke the superclass to handle it.
+                    return super.onOptionsItemSelected(item);
+
+            }
+        }*/
 
         // Intent aus der Gruppenauswahl
         Intent toGroup = getIntent();
