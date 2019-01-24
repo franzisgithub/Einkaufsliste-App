@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     EditText eT_Email;
-    EditText eT_Passwort;
+    EditText eT_Password;
 
 
     @Override
@@ -31,18 +33,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        EditText name= findViewById(R.id.eT_Email);
-        EditText passwort= findViewById(R.id.eT_Passwort);
+        EditText name = findViewById(R.id.eT_Email);
+        EditText passwort = findViewById(R.id.eT_Passwort);
         Button buttonAcc = findViewById(R.id.button);
-        Button buttonP= findViewById(R.id.button2);
+        Button buttonP = findViewById(R.id.button2);
         Button login = findViewById(R.id.button4);
 
         //Instanz der Firebase Authentifikation
-        mAuth =FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
 
         // Wechseln über erfolgreichen login zur Gruppen/Listenauswahl
-        login.setOnClickListener(new View.OnClickListener() {
+        /*login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String intentText = "New Activity";
@@ -51,11 +53,11 @@ public class MainActivity extends AppCompatActivity {
                 toGroupSet.putExtra("NEXTACTIVITY", intentText);
                 startActivity(toGroupSet);
             }
-        });
+        });*/
 
         //TODO: irgendwie ist beim App öffnen immer als erstes das Passwort eingabefeld aktiv
 
-        buttonAcc.setOnClickListener(new View.OnClickListener() {
+      /*  buttonAcc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -66,33 +68,95 @@ public class MainActivity extends AppCompatActivity {
                 // zur Activity die im Intent benannt wurde wechseln
                 startActivity(meinIntent);
             }
-        });
+        });*/
     }
-    //wird bei klicken des "Account erstellen"-Buttons ausgeführt, erstellt Account
-    private void createUser(View view){//TODO:zum butoon hinzufügen und Testen, in Doku weiterarbeiten
+
+    //wird bei klicken des "Login"-Buttons ausgeführt, erstellt Account
+    public void loginUser(View view) {
         //edit Text finden
         eT_Email = findViewById(R.id.eT_Email);
-        eT_Passwort =findViewById(R.id.eT_Passwort);
+        eT_Password = findViewById(R.id.eT_Passwort);
 
         //Edit texts auslesen
-        String s_Email = eT_Email.getText().toString();
-        String s_Passwort = eT_Passwort.getText().toString();
+        String s_Email = eT_Email.getText().toString().trim();
+        String s_Passwort = eT_Password.getText().toString().trim();
 
         //Email und Passwort auf Inhalt prüfen
-        if(s_Email.isEmpty() || s_Passwort.isEmpty()){
-            Toast.makeText(MainActivity.this,"Email oder Passwort leer! \nBitte ausfüllen!",Toast.LENGTH_LONG).show();
+        if (s_Email.isEmpty() || s_Passwort.isEmpty()) {
+            Toast.makeText(MainActivity.this, "Email oder Passwort leer! \nBitte ausfüllen!", Toast.LENGTH_LONG).show();
+            eT_Email.requestFocus();
+            eT_Password.requestFocus();
             return;
         }
-        mAuth.createUserWithEmailAndPassword(s_Email,s_Passwort).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        if (!Patterns.EMAIL_ADDRESS.matcher(s_Email).matches()) {
+            Toast.makeText(MainActivity.this, "Keine gültige E-Mail-Adresse", Toast.LENGTH_LONG).show();
+            eT_Email.requestFocus();
+            return;
+        }
+
+        if (s_Passwort.length() < 6) {
+            Toast.makeText(MainActivity.this, "Passwort muss mmindestens 6 Zeichen umfassen", Toast.LENGTH_LONG).show();
+            eT_Password.requestFocus();
+            return;
+        }
+
+        mAuth.signInWithEmailAndPassword(s_Email,s_Passwort).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    Log.d(TAG,"User created");
-                    FirebaseUser user = mAuth.getCurrentUser();
+
                 }else{
-                  Log.w(TAG,"Creating user failed!");
-                  Toast.makeText(MainActivity.this, "Registrierung fehlgeschlagen!",Toast.LENGTH_SHORT).show();
-                 }
+                    Toast.makeText(MainActivity.this, "Login fehlgeschlagen", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    //wird bei klicken des "Account erstellen"-Buttons ausgeführt, erstellt Account
+    public void createUser(View view) {
+
+        //edit Text finden
+        eT_Email = findViewById(R.id.eT_Email);
+        eT_Password = findViewById(R.id.eT_Passwort);
+
+        //Edit texts auslesen
+        String s_Email = eT_Email.getText().toString().trim();
+        String s_Passwort = eT_Password.getText().toString().trim();
+
+        //Email und Passwort auf Inhalt prüfen
+        if (s_Email.isEmpty() || s_Passwort.isEmpty()) {
+            Toast.makeText(MainActivity.this, "Email oder Passwort leer! \nBitte ausfüllen!", Toast.LENGTH_LONG).show();
+            eT_Email.requestFocus();
+            eT_Password.requestFocus();
+            return;
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(s_Email).matches()) {
+            Toast.makeText(MainActivity.this, "Keine gültige E-Mail-Adresse", Toast.LENGTH_LONG).show();
+            eT_Email.requestFocus();
+            return;
+        }
+
+        if (s_Passwort.length() < 6) {
+            Toast.makeText(MainActivity.this, "Passwort muss mmindestens 6 Zeichen umfassen", Toast.LENGTH_LONG).show();
+            eT_Password.requestFocus();
+            return;
+        }
+
+        mAuth.createUserWithEmailAndPassword(s_Email, s_Passwort).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(MainActivity.this, "Registrierung erfolgreich!", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "User created");
+                    FirebaseUser user = mAuth.getCurrentUser();
+                } else {
+                    if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                        Toast.makeText(MainActivity.this, "Email ist berreits registriert!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.w(TAG, "Creating user failed!");
+                        Toast.makeText(MainActivity.this, "Registrierung fehlgeschlagen!", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
     }
