@@ -63,7 +63,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:onClick="createUser"
+        android:onClick="createUserButton"
         android:text="Account erstellen"
         app:layout_constraintBottom_toTopOf="@+id/button2"
         app:layout_constraintEnd_toEndOf="parent"
@@ -93,7 +93,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:onClick="loginUser"
+        android:onClick="loginUserButton"
         android:text="login"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -101,4 +101,12 @@
         app:layout_constraintTop_toBottomOf="@+id/eT_Passwort"
         app:layout_constraintVertical_bias="0.037" />
 
+    <ProgressBar
+        android:id="@+id/progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone"
+        tools:ignore="MissingConstraints" />
 </android.support.constraint.ConstraintLayout>

@@ -9,6 +9,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     EditText eT_Email;
     EditText eT_Password;
+    ProgressBar progressBar;
 
 
     @Override
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         Button buttonAcc = findViewById(R.id.button);
         Button buttonP = findViewById(R.id.button2);
         Button login = findViewById(R.id.button4);
+        progressBar = findViewById(R.id.progressbar);
 
         //Instanz der Firebase Authentifikation
         mAuth = FirebaseAuth.getInstance();
@@ -71,8 +74,8 @@ public class MainActivity extends AppCompatActivity {
         });*/
     }
 
-    //wird bei klicken des "Login"-Buttons ausgeführt, erstellt Account
-    public void loginUser(View view) {
+    //loggt user ein, weiter in gruppenauswahl
+    public void loginUser() {
         //edit Text finden
         eT_Email = findViewById(R.id.eT_Email);
         eT_Password = findViewById(R.id.eT_Passwort);
@@ -99,12 +102,18 @@ public class MainActivity extends AppCompatActivity {
             eT_Password.requestFocus();
             return;
         }
+        progressBar.setVisibility(View.VISIBLE);
 
         mAuth.signInWithEmailAndPassword(s_Email,s_Passwort).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-
+                    progressBar.setVisibility(View.GONE);
+                    String intentText = "New Activity";
+                    Intent toGroupSet =
+                            new Intent(MainActivity.this, Gruppenauswahl.class);
+                    toGroupSet.putExtra("NEXTACTIVITY", intentText);
+                    startActivity(toGroupSet);
                 }else{
                     Toast.makeText(MainActivity.this, "Login fehlgeschlagen", Toast.LENGTH_LONG).show();
                 }
@@ -112,8 +121,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    //wird bei klicken des "Account erstellen"-Buttons ausgeführt, erstellt Account
-    public void createUser(View view) {
+    //erstellt User, führt anchließend loginUer aus
+    public void createUser() {
 
         //edit Text finden
         eT_Email = findViewById(R.id.eT_Email);
@@ -141,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
             eT_Password.requestFocus();
             return;
         }
-
+        progressBar.setVisibility(View.VISIBLE);
         mAuth.createUserWithEmailAndPassword(s_Email, s_Passwort).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -159,5 +168,17 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        loginUser();
     }
+
+    //beim klick auf login
+    public void loginUserButton(View view) {
+        loginUser();
+    }
+
+    //bei klickauf Registrieren
+    public void createUserButton(View view){
+        createUser();
+    }
+
 }
