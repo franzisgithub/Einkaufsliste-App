@@ -1,9 +1,9 @@
 package com.example.werkws18_21.einkaufsliste;
 
 import android.content.Intent;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.mbms.StreamingServiceInfo;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,7 +14,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.auth.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,11 +26,13 @@ public class Gruppenauswahl extends AppCompatActivity {
     private static final String USER_ID = "User-Id";
     private static final String MITGLIEDER = "Mitglieder";
     private static final String LISTEN_REFERENZ = "Listen-Referenz";
+    private static final String USER_EMAIL = "User-Email";
     EditText eTNeueListe;
     private FirebaseAuth mAuth;
     //db als Instanz für die Datenbank im firestore
     FirebaseFirestore db;
     private String UserId;
+    private String UserEmail;
 
     String neueListeRefString;
 
@@ -49,6 +50,7 @@ public class Gruppenauswahl extends AppCompatActivity {
         //Instanz der Firebase Authentifikation
         mAuth = FirebaseAuth.getInstance();
         UserId = mAuth.getUid();
+        UserEmail = mAuth.getCurrentUser().getEmail();
 
         // Gruppen / Listen
         final ArrayList<String> groupList1 = new ArrayList<>();
@@ -87,9 +89,10 @@ public class Gruppenauswahl extends AppCompatActivity {
         neueListeRef.set(ListenNameMap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Map<String, Object> UserIdMap = new HashMap<>();
-                UserIdMap.put(USER_ID, UserId);
-                neueListeRef.collection(MITGLIEDER).document().set(UserIdMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                Map<String, Object> UserMap = new HashMap<>();
+                UserMap.put(USER_ID, UserId);
+                UserMap.put(USER_EMAIL,UserEmail);
+                neueListeRef.collection(MITGLIEDER).document().set(UserMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(Gruppenauswahl.this, "Liste hinzugefügt", Toast.LENGTH_SHORT).show();
@@ -101,11 +104,11 @@ public class Gruppenauswahl extends AppCompatActivity {
         });
     }
 
-    private void toGruppenManager(String ListeRef) {
+    private void toGruppenManager(String ListeRefString) {
         String intentText = "New Activity";
         Intent toGroup =
                 new Intent(Gruppenauswahl.this, GruppenManager.class);
-        toGroup.putExtra(LISTEN_REFERENZ, ListeRef);
+        toGroup.putExtra(LISTEN_REFERENZ, ListeRefString);
         startActivity(toGroup);
     }
 
