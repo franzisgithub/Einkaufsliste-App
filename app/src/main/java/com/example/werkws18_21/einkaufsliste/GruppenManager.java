@@ -15,10 +15,15 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,9 +35,11 @@ public class GruppenManager extends AppCompatActivity {
     FirebaseAuth mAuth;
     TextView tvListenName;
     EditText eTNeueEmail;
+    TextView tv;
     DocumentReference ListeRef;
     String ListenName;
     String ListeRefString;
+
 
 
     private static final String LISTEN_REFERENZ = "Listen-Referenz";
@@ -49,14 +56,13 @@ public class GruppenManager extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         eTNeueEmail = findViewById(R.id.eTEmail);
         tvListenName = findViewById(R.id.tvListenName);
-
+        tv=findViewById(R.id.tv);
         Intent toGroup = getIntent();
         if (toGroup.getExtras() != null) {
             ListeRefString = toGroup.getExtras().get(LISTEN_REFERENZ).toString();
             ListeRef = db.collection(LISTEN_COLLECTION).document(ListeRefString);
         }
         getListenName();
-        getListen();
 
     }
 
@@ -78,18 +84,19 @@ public class GruppenManager extends AppCompatActivity {
     }
     private void addUser(){
         String sEmail = eTNeueEmail.getText().toString();
+
+        if (sEmail.isEmpty()) {
+            return;
+        }
         Map<String, Object> UserMap = new HashMap<>();
         UserMap.put(USER_EMAIL,sEmail);
         ListeRef.collection(MITGLIEDER).document().set(UserMap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Toast.makeText(GruppenManager.this, "Mitglied hinzugefügt", Toast.LENGTH_SHORT).show();
-                getListen();
             }
         });
     }
 
-    //findet alle Listen die zu dem User gehören
-    private void getListen() {//TODO
-    }
+
 }
