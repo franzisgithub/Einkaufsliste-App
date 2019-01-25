@@ -86,14 +86,14 @@ public class Liste extends AppCompatActivity {
             intentText =
                     toGroup.getExtras().get("NEXTACTIVITY").toString();
 
-            //db als Instanz für die Datenbank im firestore
-            FirebaseFirestore.getInstance();
+
         }
 
         //ListView der zu kaufenden Sachen
         listView = (ListView) findViewById(R.id.ListView);
         listView2 = (ListView) findViewById(R.id.ListView2);
-
+        //db als Instanz für die Datenbank im firestore
+        FirebaseFirestore.getInstance();
         final ArrayList<String> itemList = new ArrayList<>();
         final ArrayList<String> beispielList = new ArrayList<>();
         eingabe = (EditText) findViewById(R.id.Eingabe);
@@ -121,7 +121,6 @@ public class Liste extends AppCompatActivity {
                 eingabe.getText().clear();
             }
         });
-
 
 
         listView2.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {

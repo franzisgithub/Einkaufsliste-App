@@ -104,22 +104,18 @@ public class MainActivity extends AppCompatActivity {
         }
         progressBar.setVisibility(View.VISIBLE);
 
-        mAuth.signInWithEmailAndPassword(s_Email,s_Passwort).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        mAuth.signInWithEmailAndPassword(s_Email, s_Passwort).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    progressBar.setVisibility(View.GONE);
-                    String intentText = "New Activity";
-                    Intent toGroupSet =
-                            new Intent(MainActivity.this, Gruppenauswahl.class);
-                    toGroupSet.putExtra("NEXTACTIVITY", intentText);
-                    startActivity(toGroupSet);
-                }else{
+                if (task.isSuccessful()) {
+                    toGruppenauswahl();
+                } else {
                     Toast.makeText(MainActivity.this, "Login fehlgeschlagen", Toast.LENGTH_LONG).show();
                 }
             }
         });
     }
+
 
     //erstellt User, führt anchließend loginUer aus
     public void createUser() {
@@ -168,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        loginUser();
+        toGruppenauswahl();
     }
 
     //beim klick auf login
@@ -177,8 +173,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //bei klickauf Registrieren
-    public void createUserButton(View view){
+    public void createUserButton(View view) {
         createUser();
     }
 
+    private void toGruppenauswahl() {
+        progressBar.setVisibility(View.GONE);
+        String intentText = "New Activity";
+        Intent toGroupSet =
+                new Intent(MainActivity.this, Gruppenauswahl.class);
+        toGroupSet.putExtra("NEXTACTIVITY", intentText);
+        startActivity(toGroupSet);
+    }
 }
