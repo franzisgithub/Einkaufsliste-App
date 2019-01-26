@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.mbms.StreamingServiceInfo;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -17,6 +18,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -40,10 +42,11 @@ public class Gruppenauswahl extends AppCompatActivity {
     FirebaseFirestore db;
     private String UserId;
     private String UserEmail;
+    ArrayAdapter adapter;
 
     private ArrayList<String> mListIds = new ArrayList<>();
     private ArrayList<String> mListNames = new ArrayList<>();
-
+    ArrayList<String> groupList1;
     String neueListeRefString;
 
     @Override
@@ -62,10 +65,14 @@ public class Gruppenauswahl extends AppCompatActivity {
         UserId = mAuth.getUid();
         UserEmail = mAuth.getCurrentUser().getEmail();
 
+        final ArrayAdapter<String> adapter;
+
         // Gruppen / Listen
-        final ArrayList<String> groupList1 = new ArrayList<>();
+        groupList1 = new ArrayList<>();
 
-
+        adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, groupList1);
+        groupList.setAdapter(adapter);
+        getListen();
         //zur Gruppe wechseln
         //TODO: wechselt noch zu einer generellen Liste
         gruppe1.setOnClickListener(new View.OnClickListener() {
@@ -78,10 +85,13 @@ public class Gruppenauswahl extends AppCompatActivity {
                 startActivity(toGroup);
             }
         });
+
+
     }
 
     public void NeueListe(View view) {
         addList();
+        getListen();
     }
 
     private void addList() {
@@ -148,6 +158,18 @@ public class Gruppenauswahl extends AppCompatActivity {
                                 }
                             }
                         });
+                        for(String x : mListIds){
+                            DocumentReference ref = db.collection(LISTEN_COLLECTION).document(x);
+                            ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    DocumentSnapshot doc = task.getResult();
+                                    mListNames.add(doc.get(LISTEN_NAME).toString());
+                                    groupList1.add(doc.get(LISTEN_NAME).toString());
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
+                        }
                     }
                 }
             }
