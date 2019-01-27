@@ -98,5 +98,16 @@ public class GruppenManager extends AppCompatActivity {
         });
     }
 
+    public void toListeButton(View view){
+       toListe(ListeRefString);
+    }
+
+    private void toListe(String ListeRefString) {
+        String intentText = "New Activity";
+        Intent toGroup =
+                new Intent(GruppenManager.this, Liste.class);
+        toGroup.putExtra(LISTEN_REFERENZ, ListeRefString);
+       startActivity(toGroup);
+    }
 
 }

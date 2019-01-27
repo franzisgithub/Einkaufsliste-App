@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -31,22 +32,31 @@ import java.util.ArrayList;
 
 public class Liste extends AppCompatActivity {
 
+    private static final String LISTEN_REFERENZ = "Listen-Referenz";
+    private static final String LISTEN_NAME = "ListenName";
+    private static final String LISTEN_COLLECTION = "Listen";
+    private static final String USER_EMAIL = "User-Email";
+    private static final String MITGLIEDER = "Mitglieder";
+
+    //Strings, die Online-Verzeichnisse benennen-alt
+    private static final String LIST_COLLECTION = "Listen";
+    private static final String ITEMS_COLLECTION = "Items";
+    private static final String LIST_NAME = "Listen-Name";
     // Listen, Buttons und ArrayList
     //TODO: ArrayList für die Beispiele erstellen und Funktion zum hinzufügen machen
     private ListView listView;
     private ListView listView2;
     private EditText eingabe;
     private Button adden;
+    private TextView tvListenName;
+    DocumentReference ListeRef;
+    String ListenName;
+    String ListeRefString;
 
 
     private static final String TAG = "MyTag";
     //db als Instanz für die Datenbank im firestore
     FirebaseFirestore db;
-
-    //Strings, die Online-Verzeichnisse benennen
-    private static final String LIST_COLLECTION = "Listen";
-    private static final String ITEMS_COLLECTION = "Items";
-    private static final String LIST_NAME = "Listen-Name";
 
     //String-Arrays, die Ids und Namen aller Listen des Nutzers enthalten TODO: noch ohne Funktion
     private ArrayList<String> mListIds = new ArrayList<>();
@@ -79,21 +89,20 @@ public class Liste extends AppCompatActivity {
             }
         }*/
 
-        // Intent aus der Gruppenauswahl
+        //db als Instanz für die Datenbank im firestore
+        db = FirebaseFirestore.getInstance();
+
         Intent toGroup = getIntent();
-        String intentText = "";
         if (toGroup.getExtras() != null) {
-            intentText =
-                    toGroup.getExtras().get("NEXTACTIVITY").toString();
-
-
+            ListeRefString = toGroup.getExtras().get(LISTEN_REFERENZ).toString();
+            ListeRef = db.collection(LISTEN_COLLECTION).document(ListeRefString);
         }
-
+        getListenName();
         //ListView der zu kaufenden Sachen
         listView = (ListView) findViewById(R.id.ListView);
         listView2 = (ListView) findViewById(R.id.ListView2);
-        //db als Instanz für die Datenbank im firestore
-        FirebaseFirestore.getInstance();
+        tvListenName=findViewById(R.id.tvListenName);
+
         final ArrayList<String> itemList = new ArrayList<>();
         final ArrayList<String> beispielList = new ArrayList<>();
         eingabe = (EditText) findViewById(R.id.Eingabe);
@@ -156,20 +165,25 @@ public class Liste extends AppCompatActivity {
         listView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-
                 final int positionToRemove = position;
-
-
                 itemList.add(beispielList.get(position));
                 beispielList.remove(positionToRemove);
                 adapter1.notifyDataSetChanged();
                 adapter.notifyDataSetChanged();
+            }
+        });
+    }//onCreate-Ende
 
-
+    private void getListenName() {
+        ListeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot doc = task.getResult();
+                ListenName = doc.get(LISTEN_NAME).toString();
+                tvListenName.setText("Liste: " + ListenName);
             }
         });
     }
-
 
     //aufrufen, um Items in ausgewählter Liste herunterzuladen
     public void getItems(View view) {

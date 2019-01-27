@@ -122,6 +122,7 @@ public class Gruppenauswahl extends AppCompatActivity {
 
             }
         });
+        getListen();
     }
 
     private void toGruppenManager(String ListeRefString) {
