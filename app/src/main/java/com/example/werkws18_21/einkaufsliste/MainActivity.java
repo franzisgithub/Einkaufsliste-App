@@ -185,4 +185,5 @@ public class MainActivity extends AppCompatActivity {
         toGroupSet.putExtra("NEXTACTIVITY", intentText);
         startActivity(toGroupSet);
     }
+
 }

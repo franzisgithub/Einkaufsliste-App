@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -42,8 +43,6 @@ public class Gruppenauswahl extends AppCompatActivity {
     FirebaseFirestore db;
     private String UserId;
     private String UserEmail;
-    ArrayAdapter adapter;
-
     private ArrayList<String> mListIds = new ArrayList<>();
     private ArrayList<String> mListNames = new ArrayList<>();
     ArrayList<String> groupList1;
@@ -72,6 +71,7 @@ public class Gruppenauswahl extends AppCompatActivity {
 
         adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, groupList1);
         groupList.setAdapter(adapter);
+
         getListen();
         //zur Gruppe wechseln
         //TODO: wechselt noch zu einer generellen Liste
@@ -111,7 +111,7 @@ public class Gruppenauswahl extends AppCompatActivity {
             public void onSuccess(Void aVoid) {
                 Map<String, Object> UserMap = new HashMap<>();
                 UserMap.put(USER_ID, UserId);
-                UserMap.put(USER_EMAIL,UserEmail);
+                UserMap.put(USER_EMAIL, UserEmail);
                 neueListeRef.collection(MITGLIEDER).document().set(UserMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -137,39 +137,39 @@ public class Gruppenauswahl extends AppCompatActivity {
     private void getListen() {
         mListIds.clear();
         mListNames.clear();
+        groupList1.clear();
 
+        final ArrayAdapter adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, groupList1);
         final CollectionReference listen = db.collection(LISTEN_COLLECTION);
         Query listQuery = listen;
         listQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    for(final QueryDocumentSnapshot doc:task.getResult()){
+                if (task.isSuccessful()) {
+                    for (final QueryDocumentSnapshot doc : task.getResult()) {
                         CollectionReference colRef = listen.document(doc.getId()).collection(MITGLIEDER);
-                        Query MitgliederQuery = colRef.whereEqualTo(USER_EMAIL,mAuth.getCurrentUser().getEmail());
+                        Query MitgliederQuery = colRef.whereEqualTo(USER_EMAIL, mAuth.getCurrentUser().getEmail());
                         MitgliederQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if(task.isSuccessful()){
-                                    for(QueryDocumentSnapshot doc1 : task.getResult()){
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot doc1 : task.getResult()) {
                                         String liste = doc.getId();
                                         mListIds.add(liste);
+                                        DocumentReference ref = db.collection(LISTEN_COLLECTION).document(liste);
+                                        ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                DocumentSnapshot doc = task.getResult();
+                                                mListNames.add(doc.get(LISTEN_NAME).toString());
+                                                groupList1.add(doc.get(LISTEN_NAME).toString());
+                                                adapter.notifyDataSetChanged();
+                                            }
+                                        });
                                     }
                                 }
                             }
                         });
-                        for(String x : mListIds){
-                            DocumentReference ref = db.collection(LISTEN_COLLECTION).document(x);
-                            ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    DocumentSnapshot doc = task.getResult();
-                                    mListNames.add(doc.get(LISTEN_NAME).toString());
-                                    groupList1.add(doc.get(LISTEN_NAME).toString());
-                                    adapter.notifyDataSetChanged();
-                                }
-                            });
-                        }
                     }
                 }
             }
