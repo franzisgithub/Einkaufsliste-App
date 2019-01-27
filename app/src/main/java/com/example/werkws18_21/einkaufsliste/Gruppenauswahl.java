@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ public class Gruppenauswahl extends AppCompatActivity {
     private static final String LISTEN_REFERENZ = "Listen-Referenz";
     private static final String USER_EMAIL = "User-Email";
     EditText eTNeueListe;
+    ProgressBar progressBar;
     private FirebaseAuth mAuth;
     //db als Instanz für die Datenbank im firestore
     FirebaseFirestore db;
@@ -53,6 +55,7 @@ public class Gruppenauswahl extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gruppenauswahl);
 
+        progressBar = findViewById(R.id.progressbar);
         Button gruppe1 = findViewById(R.id.button7);
         ListView groupList = findViewById(R.id.groupList);
 
@@ -89,9 +92,9 @@ public class Gruppenauswahl extends AppCompatActivity {
 
     }
 
-    public void NeueListe(View view) {
+    public void NeueListeButton(View view) {
+        progressBar.setVisibility(View.VISIBLE);
         addList();
-        getListen();
     }
 
     private void addList() {
@@ -116,6 +119,7 @@ public class Gruppenauswahl extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(Gruppenauswahl.this, "Liste hinzugefügt", Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.GONE);
                         toGruppenManager(neueListeRefString);
                     }
                 });

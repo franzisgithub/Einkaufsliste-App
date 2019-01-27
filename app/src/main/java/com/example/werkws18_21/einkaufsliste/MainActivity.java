@@ -111,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
                     toGruppenauswahl();
                 } else {
                     Toast.makeText(MainActivity.this, "Login fehlgeschlagen", Toast.LENGTH_LONG).show();
+                    progressBar.setVisibility(View.GONE);
                 }
             }
         });
