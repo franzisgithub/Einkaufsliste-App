@@ -140,6 +140,7 @@ public class Gruppenauswahl extends AppCompatActivity {
         if (sListenName.isEmpty()) {
             Toast.makeText(Gruppenauswahl.this, "Geben Sie einen Listennamen ein!", Toast.LENGTH_LONG).show();
             eTNeueListe.requestFocus();
+            progressBar.setVisibility(View.GONE);
             return;
         }
         Map<String, Object> ListenNameMap = new HashMap<>();
