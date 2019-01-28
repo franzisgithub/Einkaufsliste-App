@@ -49,7 +49,9 @@ public class Gruppenauswahl extends AppCompatActivity {
     private ArrayList<String> mListNames = new ArrayList<>();
     ArrayList<String> groupList1;
     String neueListeRefString;
+    private Boolean ListeExistiertBereits;
 
+    ArrayAdapter<String> adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,12 +68,8 @@ public class Gruppenauswahl extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         UserId = mAuth.getUid();
         UserEmail = mAuth.getCurrentUser().getEmail();
-
-        final ArrayAdapter<String> adapter;
-
         // Gruppen / Listen
         groupList1 = new ArrayList<>();
-
         adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, groupList1);
         groupList.setAdapter(adapter);
 
@@ -91,60 +89,11 @@ public class Gruppenauswahl extends AppCompatActivity {
 
 
     }
-
-    public void NeueListeButton(View view) {
-        progressBar.setVisibility(View.VISIBLE);
-        addList();
-    }
-
-    private void addList() {
-        String sListenName = eTNeueListe.getText().toString();
-        if (sListenName.isEmpty()) {
-            Toast.makeText(Gruppenauswahl.this, "Geben Sie einen Listennamen ein!", Toast.LENGTH_LONG).show();
-            eTNeueListe.requestFocus();
-            return;
-        }
-        Map<String, Object> ListenNameMap = new HashMap<>();
-        ListenNameMap.put(LISTEN_NAME, sListenName);
-
-        final DocumentReference neueListeRef = db.collection(LISTEN_COLLECTION).document();
-        neueListeRefString = neueListeRef.getId();
-        neueListeRef.set(ListenNameMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Map<String, Object> UserMap = new HashMap<>();
-                UserMap.put(USER_ID, UserId);
-                UserMap.put(USER_EMAIL, UserEmail);
-                neueListeRef.collection(MITGLIEDER).document().set(UserMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(Gruppenauswahl.this, "Liste hinzugefügt", Toast.LENGTH_SHORT).show();
-                        progressBar.setVisibility(View.GONE);
-                        toGruppenManager(neueListeRefString);
-                    }
-                });
-
-            }
-        });
-        getListen();
-    }
-
-    private void toGruppenManager(String ListeRefString) {
-        String intentText = "New Activity";
-        Intent toGroup =
-                new Intent(Gruppenauswahl.this, GruppenManager.class);
-        toGroup.putExtra(LISTEN_REFERENZ, ListeRefString);
-        startActivity(toGroup);
-    }
-
-
     //bis jetzt: schreibt alle Listen-IDs in mListIds
     private void getListen() {
         mListIds.clear();
         mListNames.clear();
         groupList1.clear();
-
-        final ArrayAdapter adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, groupList1);
         final CollectionReference listen = db.collection(LISTEN_COLLECTION);
         Query listQuery = listen;
         listQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -180,4 +129,69 @@ public class Gruppenauswahl extends AppCompatActivity {
             }
         });
     }
+
+    public void NeueListeButton(View view) {
+        progressBar.setVisibility(View.VISIBLE);
+        addList();
+    }
+
+    private void addList() {
+        String sListenName = eTNeueListe.getText().toString();
+        if (sListenName.isEmpty()) {
+            Toast.makeText(Gruppenauswahl.this, "Geben Sie einen Listennamen ein!", Toast.LENGTH_LONG).show();
+            eTNeueListe.requestFocus();
+            return;
+        }
+        Map<String, Object> ListenNameMap = new HashMap<>();
+        ListenNameMap.put(LISTEN_NAME, sListenName);
+        ListeExistiertBereits = false;
+        //Abfrage, ob es schon eine so benannte Liste gibt:
+        final CollectionReference listen = db.collection(LISTEN_COLLECTION);
+        Query listenQuery = listen.whereEqualTo(LISTEN_NAME, sListenName);
+        listenQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                        ListeExistiertBereits = true;
+                    }
+                }
+            }
+        });
+        Toast.makeText(Gruppenauswahl.this, ListeExistiertBereits.toString(), Toast.LENGTH_SHORT).show();//TODO: nicht mehrere Listen mit gleichem Namen erstellen; das verlassen der Funktion funltioniert nicht, in der if-abfraage ist ListeExistiertBereits wieder false
+        if (ListeExistiertBereits) {
+            Toast.makeText(Gruppenauswahl.this, "Die Liste existiert bereits!", Toast.LENGTH_SHORT).show();
+            eTNeueListe.getText().clear();
+        }
+        final DocumentReference neueListeRef = db.collection(LISTEN_COLLECTION).document();
+        neueListeRefString = neueListeRef.getId();
+        neueListeRef.set(ListenNameMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Map<String, Object> UserMap = new HashMap<>();
+                UserMap.put(USER_ID, UserId);
+                UserMap.put(USER_EMAIL, UserEmail);
+                neueListeRef.collection(MITGLIEDER).document().set(UserMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(Gruppenauswahl.this, "Liste hinzugefügt", Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.GONE);
+                        toGruppenManager(neueListeRefString);
+                    }
+                });
+
+            }
+        });
+        getListen();
+    }
+
+    private void toGruppenManager(String ListeRefString) {
+        String intentText = "New Activity";
+        Intent toGroup =
+                new Intent(Gruppenauswahl.this, GruppenManager.class);
+        toGroup.putExtra(LISTEN_REFERENZ, ListeRefString);
+        startActivity(toGroup);
+    }
+
+
 }

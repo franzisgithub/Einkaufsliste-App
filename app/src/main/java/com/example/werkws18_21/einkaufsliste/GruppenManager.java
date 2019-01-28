@@ -5,8 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,8 +42,7 @@ public class GruppenManager extends AppCompatActivity {
     DocumentReference ListeRef;
     String ListenName;
     String ListeRefString;
-
-
+    ArrayList<String> Mitglieder;
 
     private static final String LISTEN_REFERENZ = "Listen-Referenz";
     private static final String LISTEN_NAME = "ListenName";
@@ -48,6 +50,7 @@ public class GruppenManager extends AppCompatActivity {
     private static final String USER_EMAIL = "User-Email";
     private static final String MITGLIEDER = "Mitglieder";
 
+    ArrayAdapter<String> adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,14 +59,36 @@ public class GruppenManager extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         eTNeueEmail = findViewById(R.id.eTEmail);
         tvListenName = findViewById(R.id.tvListenName);
-        tv=findViewById(R.id.tv);
+
+        ListView lvMitglieder = findViewById(R.id.lvMitglieder);
+        Mitglieder = new ArrayList<>();
+        adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, Mitglieder);
+        lvMitglieder.setAdapter(adapter);
+
+        tv = findViewById(R.id.tv);
         Intent toGroup = getIntent();
         if (toGroup.getExtras() != null) {
             ListeRefString = toGroup.getExtras().get(LISTEN_REFERENZ).toString();
             ListeRef = db.collection(LISTEN_COLLECTION).document(ListeRefString);
         }
         getListenName();
+        getMitglieder();
 
+    }
+
+    private void getMitglieder() {
+        Mitglieder.clear();
+        ListeRef.collection(MITGLIEDER).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                        Mitglieder.add(doc.get(USER_EMAIL).toString());
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        });
     }
 
     //schreibt den Listennamen in den Titel
@@ -79,17 +104,19 @@ public class GruppenManager extends AppCompatActivity {
     }
 
 
-    public void addUserButton(View view){
+    public void addUserButton(View view) {
         addUser();
+        getMitglieder();
     }
-    private void addUser(){
+
+    private void addUser() {
         String sEmail = eTNeueEmail.getText().toString();
 
         if (sEmail.isEmpty()) {
             return;
         }
         Map<String, Object> UserMap = new HashMap<>();
-        UserMap.put(USER_EMAIL,sEmail);
+        UserMap.put(USER_EMAIL, sEmail);
         ListeRef.collection(MITGLIEDER).document().set(UserMap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -98,8 +125,8 @@ public class GruppenManager extends AppCompatActivity {
         });
     }
 
-    public void toListeButton(View view){
-       toListe(ListeRefString);
+    public void toListeButton(View view) {
+        toListe(ListeRefString);
     }
 
     private void toListe(String ListeRefString) {
@@ -107,7 +134,7 @@ public class GruppenManager extends AppCompatActivity {
         Intent toGroup =
                 new Intent(GruppenManager.this, Liste.class);
         toGroup.putExtra(LISTEN_REFERENZ, ListeRefString);
-       startActivity(toGroup);
+        startActivity(toGroup);
     }
 
 }

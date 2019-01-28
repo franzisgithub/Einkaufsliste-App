@@ -43,7 +43,6 @@ public class Liste extends AppCompatActivity {
     private static final String ITEMS_COLLECTION = "Items";
     private static final String LIST_NAME = "Listen-Name";
     // Listen, Buttons und ArrayList
-    //TODO: ArrayList für die Beispiele erstellen und Funktion zum hinzufügen machen
     private ListView listView;
     private ListView listView2;
     private EditText eingabe;
