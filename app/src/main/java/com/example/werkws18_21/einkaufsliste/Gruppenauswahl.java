@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.mbms.StreamingServiceInfo;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -70,12 +71,28 @@ public class Gruppenauswahl extends AppCompatActivity {
         UserEmail = mAuth.getCurrentUser().getEmail();
         // Gruppen / Listen
         groupList1 = new ArrayList<>();
-        adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, groupList1);
+        adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, groupList1){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+
+                View view = super.getView(position, convertView, parent);
+                TextView textView5=(TextView) view.findViewById(android.R.id.text1);
+                textView5.setTextSize(20);
+                ViewGroup.LayoutParams layoutparams = view.getLayoutParams();
+
+                //Define your height here.
+                layoutparams.height = 140;
+
+                view.setLayoutParams(layoutparams);
+
+                return view;
+            }
+        };;
         groupList.setAdapter(adapter);
 
         getListen();
         //zur Gruppe wechseln
-        //TODO: wechselt noch zu einer generellen Liste
+        //TODO: unnötig
         gruppe1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

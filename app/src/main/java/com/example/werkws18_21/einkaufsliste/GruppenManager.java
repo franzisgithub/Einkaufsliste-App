@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -62,7 +63,23 @@ public class GruppenManager extends AppCompatActivity {
 
         ListView lvMitglieder = findViewById(R.id.lvMitglieder);
         Mitglieder = new ArrayList<>();
-        adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, Mitglieder);
+        adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, Mitglieder){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+
+                View view = super.getView(position, convertView, parent);
+                TextView textView5=(TextView) view.findViewById(android.R.id.text1);
+                textView5.setTextSize(20);
+                ViewGroup.LayoutParams layoutparams = view.getLayoutParams();
+
+                //Define your height here.
+                layoutparams.height = 140;
+
+                view.setLayoutParams(layoutparams);
+
+                return view;
+            }
+        };;
         lvMitglieder.setAdapter(adapter);
 
         tv = findViewById(R.id.tv);
