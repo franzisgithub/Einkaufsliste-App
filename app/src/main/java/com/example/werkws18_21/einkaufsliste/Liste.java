@@ -100,25 +100,68 @@ public class Liste extends AppCompatActivity {
         //ListView der zu kaufenden Sachen
         listView = (ListView) findViewById(R.id.ListView);
         listView2 = (ListView) findViewById(R.id.ListView2);
-        tvListenName=findViewById(R.id.tvListenName);
+        tvListenName = findViewById(R.id.tvListenName);
 
         final ArrayList<String> itemList = new ArrayList<>();
         final ArrayList<String> beispielList = new ArrayList<>();
         eingabe = (EditText) findViewById(R.id.Eingabe);
         adden = (Button) findViewById(R.id.button10);
-        final ArrayAdapter<String> adapter;
-        final ArrayAdapter<String> adapter1;
+        //final ArrayAdapter<String> adapter;
+        //final ArrayAdapter<String> adapter1;
 
         /*adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, itemList){
           public View getView(int position, View convertView, ViewGroup parent);
               itemList.setTextSize(TypedValue.COMPLEX_UNIT_DIP,18);
         };*/
         // adapter mit den drei Parametern
-        adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, itemList);
-        adapter1 = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, beispielList);
+        //adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, itemList);
+        //adapter1 = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, beispielList);
         // data setzen in der ListView
+        //listView.setAdapter(adapter);
+        //listView2.setAdapter(adapter1);
+
+        // Adapter mit Textgröße und Feldgröße für die MainListe
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(Liste.this, android.R.layout.simple_list_item_1, itemList) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+
+                View view = super.getView(position, convertView, parent);
+                TextView textView5=(TextView) view.findViewById(android.R.id.text1);
+                textView5.setTextSize(20);
+                ViewGroup.LayoutParams layoutparams = view.getLayoutParams();
+
+                //Define your height here.
+                layoutparams.height = 140;
+
+                view.setLayoutParams(layoutparams);
+
+                return view;
+            }
+        };
         listView.setAdapter(adapter);
+
+        // Adapter mit Textgröße und Feldgröße für Beispiele
+        final ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(Liste.this, android.R.layout.simple_list_item_1, beispielList) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+
+                View view = super.getView(position, convertView, parent);
+                TextView textView5=(TextView) view.findViewById(android.R.id.text1);
+                textView5.setTextSize(20);
+                ViewGroup.LayoutParams layoutparams = view.getLayoutParams();
+
+                //Define your height here.
+                layoutparams.height = 140;
+
+                view.setLayoutParams(layoutparams);
+
+                return view;
+            }
+        };
         listView2.setAdapter(adapter1);
+
+
+
         //aufruf soll ausgewähltes oder eingegebenes Item zur ausgewählten Liste hinzufügen
         // war vorher addItem Funktion
         adden.setOnClickListener(new View.OnClickListener() {

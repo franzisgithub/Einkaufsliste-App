@@ -194,5 +194,4 @@ public class Gruppenauswahl extends AppCompatActivity {
         startActivity(toGroup);
     }
 
-
 }
