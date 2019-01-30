@@ -61,7 +61,6 @@ public class Gruppenauswahl extends AppCompatActivity {
         setContentView(R.layout.activity_gruppenauswahl);
 
         progressBar = findViewById(R.id.progressbar);
-        Button gruppe1 = findViewById(R.id.button7);
         ListView groupList = findViewById(R.id.groupList);
 
         eTNeueListe = findViewById(R.id.eTNeueListe);
@@ -93,18 +92,7 @@ public class Gruppenauswahl extends AppCompatActivity {
         groupList.setAdapter(adapter);
 
         getListen();
-        //zur Gruppe wechseln
-        //TODO: unnötig
-        gruppe1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String intentText = "New Activity";
-                Intent toGroup =
-                        new Intent(Gruppenauswahl.this, Liste.class);
-                toGroup.putExtra("NEXTACTIVITY", intentText);
-                startActivity(toGroup);
-            }
-        });
+
 
         groupList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
