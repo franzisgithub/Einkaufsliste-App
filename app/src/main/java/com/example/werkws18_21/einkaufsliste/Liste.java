@@ -29,6 +29,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Liste extends AppCompatActivity {
 
@@ -42,6 +44,8 @@ public class Liste extends AppCompatActivity {
     private static final String LIST_COLLECTION = "Listen";
     private static final String ITEMS_COLLECTION = "Items";
     private static final String LIST_NAME = "Listen-Name";
+    private static final String ITEM_NAME = "Item-Name";
+    private static final String BEISPIELE_COLLECTION = "Beispiele";
     // Listen, Buttons und ArrayList
     private ListView listView;
     private ListView listView2;
@@ -51,15 +55,15 @@ public class Liste extends AppCompatActivity {
     DocumentReference ListeRef;
     String ListenName;
     String ListeRefString;
+    ArrayList<String> itemList;
+    ArrayList<String> beispielList;
+    ArrayAdapter<String> adapter;
+    ArrayAdapter<String> adapter1;
 
 
     private static final String TAG = "MyTag";
     //db als Instanz für die Datenbank im firestore
     FirebaseFirestore db;
-
-    //String-Arrays, die Ids und Namen aller Listen des Nutzers enthalten TODO: noch ohne Funktion
-    private ArrayList<String> mListIds = new ArrayList<>();
-    private ArrayList<String> mListNames = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,8 +106,8 @@ public class Liste extends AppCompatActivity {
         listView2 = (ListView) findViewById(R.id.ListView2);
         tvListenName = findViewById(R.id.tvListenName);
 
-        final ArrayList<String> itemList = new ArrayList<>();
-        final ArrayList<String> beispielList = new ArrayList<>();
+        itemList = new ArrayList<>();
+        beispielList = new ArrayList<>();
         eingabe = (EditText) findViewById(R.id.Eingabe);
         adden = (Button) findViewById(R.id.button10);
         //final ArrayAdapter<String> adapter;
@@ -121,12 +125,12 @@ public class Liste extends AppCompatActivity {
         //listView2.setAdapter(adapter1);
 
         // Adapter mit Textgröße und Feldgröße für die MainListe
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(Liste.this, android.R.layout.simple_list_item_1, itemList) {
+        adapter = new ArrayAdapter<String>(Liste.this, android.R.layout.simple_list_item_1, itemList) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
 
                 View view = super.getView(position, convertView, parent);
-                TextView textView5=(TextView) view.findViewById(android.R.id.text1);
+                TextView textView5 = (TextView) view.findViewById(android.R.id.text1);
                 textView5.setTextSize(20);
                 ViewGroup.LayoutParams layoutparams = view.getLayoutParams();
 
@@ -141,12 +145,12 @@ public class Liste extends AppCompatActivity {
         listView.setAdapter(adapter);
 
         // Adapter mit Textgröße und Feldgröße für Beispiele
-        final ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(Liste.this, android.R.layout.simple_list_item_1, beispielList) {
+        adapter1 = new ArrayAdapter<String>(Liste.this, android.R.layout.simple_list_item_1, beispielList) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
 
                 View view = super.getView(position, convertView, parent);
-                TextView textView5=(TextView) view.findViewById(android.R.id.text1);
+                TextView textView5 = (TextView) view.findViewById(android.R.id.text1);
                 textView5.setTextSize(20);
                 ViewGroup.LayoutParams layoutparams = view.getLayoutParams();
 
@@ -160,6 +164,8 @@ public class Liste extends AppCompatActivity {
         };
         listView2.setAdapter(adapter1);
 
+        getBeispiele();
+        getItems();
 
 
         //aufruf soll ausgewähltes oder eingegebenes Item zur ausgewählten Liste hinzufügen
@@ -170,9 +176,29 @@ public class Liste extends AppCompatActivity {
                 itemList.add(eingabe.getText().toString());
                 adapter.notifyDataSetChanged();
                 eingabe.getText().clear();
+                uploadItems();
             }
         });
 
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                AlertDialog.Builder adb = new AlertDialog.Builder(Liste.this);
+                adb.setTitle("Delete?");
+                adb.setMessage("Möchten sie das Produkt entfernen?");
+                final int positionToRemove = position;
+                adb.setNegativeButton("Zurück", null);
+                adb.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        itemList.remove(positionToRemove);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+                adb.show();
+                uploadItems();
+                return true;
+            }
+        });
 
         listView2.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -189,6 +215,7 @@ public class Liste extends AppCompatActivity {
                     }
                 });
                 adb.show();
+                uploadBeispiele();
                 return true;
             }
         });
@@ -202,6 +229,8 @@ public class Liste extends AppCompatActivity {
                 adapter1.notifyDataSetChanged();
                 itemList.remove(positionToRemove);
                 adapter.notifyDataSetChanged();
+                uploadBeispiele();
+                uploadItems();
             }
         });
         listView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -212,6 +241,8 @@ public class Liste extends AppCompatActivity {
                 beispielList.remove(positionToRemove);
                 adapter1.notifyDataSetChanged();
                 adapter.notifyDataSetChanged();
+                uploadBeispiele();
+                uploadItems();
             }
         });
     }//onCreate-Ende
@@ -227,44 +258,97 @@ public class Liste extends AppCompatActivity {
         });
     }
 
-    //aufrufen, um Items in ausgewählter Liste herunterzuladen
-    public void getItems(View view) {
-        //TODO
-    }
+    private void uploadItems() {
+        final CollectionReference items = ListeRef.collection(ITEMS_COLLECTION);
 
-    //aufrufen, um alle Listen des angemeldeten Users herunterzuladen
-    public void getLists(View view) {
-        //TODO
-
-        CollectionReference listen = db.collection(LIST_COLLECTION);
-        Query listQuery = listen; //TODO: whereequalto ->userId
-
-        listQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        items.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                mListIds.clear();
-                mListNames.clear();
                 if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        String liste = document.getId();
-                        mListIds.add(liste);
+                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                        String x = doc.getId();
+                        items.document(x).delete();
                     }
-                } else {
-                    Log.e("fail", "fail");
+                }
+            }
+        }).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                for (String x : itemList) {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put(ITEM_NAME, x);
+                    items.document().set(map);
                 }
             }
         });
-        for (String x : mListIds) {
-            DocumentReference ref = db.collection(LIST_COLLECTION).document(x);
-            ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    DocumentSnapshot doc = task.getResult();
-                    mListNames.add(doc.get(LIST_NAME).toString());
-                    //TODO: auf Funktion prüfen
-                }
-            });
-        }
 
     }
+
+    private void uploadBeispiele() {
+        final CollectionReference beispiele = ListeRef.collection(BEISPIELE_COLLECTION);
+
+        beispiele.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                        String x = doc.getId();
+                        beispiele.document(x).delete();
+                    }
+                }
+            }
+        }).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                for (String x : beispielList) {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put(ITEM_NAME, x);
+                    beispiele.document().set(map);
+                }
+            }
+        });
+
+    }
+
+    private void getItems() {
+        CollectionReference items = ListeRef.collection(ITEMS_COLLECTION);
+        items.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    itemList.clear();
+                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                        itemList.add(doc.get(ITEM_NAME).toString());
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        });
+    }
+
+    private void getBeispiele() {
+        Query query = ListeRef.collection(BEISPIELE_COLLECTION);
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    beispielList.clear();
+                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                        beispielList.add(doc.get(ITEM_NAME).toString());
+                        adapter1.notifyDataSetChanged();
+                    }
+                }
+            }
+        });
+    }
+
+    private void deleteAllItems() {
+//TODO
+    }
+
+    public void aktualisierenButton(View view){
+        getItems();
+        getBeispiele();
+    }
+
 }
