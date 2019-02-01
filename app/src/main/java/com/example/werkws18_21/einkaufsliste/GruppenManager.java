@@ -148,6 +148,23 @@ public class GruppenManager extends AppCompatActivity {
         toListe(ListeRefString);
     }
 
+    public void deleteListe(View view){
+        ListeRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                toGruppenauswahl();
+            }
+        });
+    }
+
+    private void toGruppenauswahl() {
+        String intentText = "New Activity";
+        Intent toGroupSet =
+                new Intent(GruppenManager.this, Gruppenauswahl.class);
+        toGroupSet.putExtra("NEXTACTIVITY", intentText);
+        startActivity(toGroupSet);
+    }
+
     private void toListe(String ListeRefString) {
         String intentText = "New Activity";
         Intent toGroup =
