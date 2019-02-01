@@ -186,17 +186,17 @@ public class Liste extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 AlertDialog.Builder adb = new AlertDialog.Builder(Liste.this);
                 adb.setTitle("Entfernen?");
-                adb.setMessage("Möchten sie das Produkt entfernen?");
+                adb.setMessage("Möchten Sie das Produkt entfernen?");
                 final int positionToRemove = position;
                 adb.setNegativeButton("Zurück", null);
                 adb.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         itemList.remove(positionToRemove);
                         adapter.notifyDataSetChanged();
+                        uploadItems();
                     }
                 });
                 adb.show();
-                uploadItems();
                 return true;
             }
         });
@@ -206,17 +206,17 @@ public class Liste extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 AlertDialog.Builder adb = new AlertDialog.Builder(Liste.this);
                 adb.setTitle("Entfernen?");
-                adb.setMessage("Möchten sie das Produkt entfernen?");
+                adb.setMessage("Möchten Sie das Produkt entfernen?");
                 final int positionToRemove = position;
                 adb.setNegativeButton("Zurück", null);
                 adb.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         beispielList.remove(positionToRemove);
                         adapter1.notifyDataSetChanged();
+                        uploadBeispiele();
                     }
                 });
                 adb.show();
-                uploadBeispiele();
                 return true;
             }
         });

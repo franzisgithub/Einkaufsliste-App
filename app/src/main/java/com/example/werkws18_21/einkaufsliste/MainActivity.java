@@ -44,33 +44,12 @@ public class MainActivity extends AppCompatActivity {
 
         //Instanz der Firebase Authentifikation
         mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user!=null){
+            toGruppenauswahl();
+            this.finish();
+        }
 
-
-        // Wechseln über erfolgreichen login zur Gruppen/Listenauswahl
-        /*login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String intentText = "New Activity";
-                Intent toGroupSet =
-                        new Intent(MainActivity.this, Gruppenauswahl.class);
-                toGroupSet.putExtra("NEXTACTIVITY", intentText);
-                startActivity(toGroupSet);
-            }
-        });*/
-
-
-      /*  buttonAcc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String intentText = "New Activity";
-                Intent meinIntent =
-                        new Intent(MainActivity.this, Accounterstellen.class);
-                meinIntent.putExtra("NEXTACTIVITY",intentText);
-                // zur Activity die im Intent benannt wurde wechseln
-                startActivity(meinIntent);
-            }
-        });*/
     }
 
     //loggt user ein, weiter in gruppenauswahl
