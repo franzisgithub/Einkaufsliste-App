@@ -185,7 +185,7 @@ public class Liste extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 AlertDialog.Builder adb = new AlertDialog.Builder(Liste.this);
-                adb.setTitle("Delete?");
+                adb.setTitle("Entfernen?");
                 adb.setMessage("Möchten sie das Produkt entfernen?");
                 final int positionToRemove = position;
                 adb.setNegativeButton("Zurück", null);
@@ -205,7 +205,7 @@ public class Liste extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 AlertDialog.Builder adb = new AlertDialog.Builder(Liste.this);
-                adb.setTitle("Delete?");
+                adb.setTitle("Entfernen?");
                 adb.setMessage("Möchten sie das Produkt entfernen?");
                 final int positionToRemove = position;
                 adb.setNegativeButton("Zurück", null);
@@ -350,6 +350,22 @@ public class Liste extends AppCompatActivity {
 
     private void deleteAllItems() {
 //TODO
+    }
+
+    public void toGruppenauswahl(View view) {
+        String intentText = "New Activity";
+        Intent toGroupSet =
+                new Intent(Liste.this, Gruppenauswahl.class);
+        toGroupSet.putExtra("NEXTACTIVITY", intentText);
+        startActivity(toGroupSet);
+    }
+
+    public void toGruppenManager(View view) {
+        String intentText = "New Activity";
+        Intent toGroup =
+                new Intent(Liste.this, GruppenManager.class);
+        toGroup.putExtra(LISTEN_REFERENZ, ListeRefString);
+        startActivity(toGroup);
     }
 
     public void aktualisierenButton(View view){
