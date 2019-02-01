@@ -29,6 +29,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -226,6 +227,7 @@ public class Liste extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 final int positionToRemove = position;
                 beispielList.add(0, itemList.get(position));
+                Collections.sort(beispielList,String.CASE_INSENSITIVE_ORDER);
                 adapter1.notifyDataSetChanged();
                 itemList.remove(positionToRemove);
                 adapter.notifyDataSetChanged();
@@ -238,6 +240,7 @@ public class Liste extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 final int positionToRemove = position;
                 itemList.add(beispielList.get(position));
+                Collections.sort(itemList,String.CASE_INSENSITIVE_ORDER);
                 beispielList.remove(positionToRemove);
                 adapter1.notifyDataSetChanged();
                 adapter.notifyDataSetChanged();
@@ -321,6 +324,8 @@ public class Liste extends AppCompatActivity {
                         itemList.add(doc.get(ITEM_NAME).toString());
                         adapter.notifyDataSetChanged();
                     }
+                    Collections.sort(itemList,String.CASE_INSENSITIVE_ORDER);
+                    adapter.notifyDataSetChanged();
                 }
             }
         });
@@ -335,8 +340,9 @@ public class Liste extends AppCompatActivity {
                     beispielList.clear();
                     for (QueryDocumentSnapshot doc : task.getResult()) {
                         beispielList.add(doc.get(ITEM_NAME).toString());
-                        adapter1.notifyDataSetChanged();
                     }
+                    Collections.sort(beispielList,String.CASE_INSENSITIVE_ORDER);
+                    adapter1.notifyDataSetChanged();
                 }
             }
         });

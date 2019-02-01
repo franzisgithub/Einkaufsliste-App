@@ -28,6 +28,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -101,8 +102,9 @@ public class GruppenManager extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot doc : task.getResult()) {
                         Mitglieder.add(doc.get(USER_EMAIL).toString());
-                        adapter.notifyDataSetChanged();
                     }
+                    Collections.sort(Mitglieder,String.CASE_INSENSITIVE_ORDER);
+                    adapter.notifyDataSetChanged();
                 }
             }
         });

@@ -29,6 +29,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -219,7 +220,6 @@ public class Gruppenauswahl extends AppCompatActivity {
 
                     }
                 });
-                getListen();
             }
         });
 
