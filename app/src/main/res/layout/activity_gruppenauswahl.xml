@@ -28,12 +28,12 @@
         android:id="@+id/btnNeueListe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:onClick="NeueListeButton"
         android:text="Liste hinzufügen"
         app:layout_constraintStart_toEndOf="@+id/eTNeueListe"
-        app:layout_constraintTop_toBottomOf="@+id/btnLogOut" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
         android:id="@+id/groupList"
@@ -57,27 +57,6 @@
         android:hint="Neue Liste"
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnLogOut" />
-
-    <TextView
-        android:id="@+id/tvEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:textSize="25sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/btnLogOut"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:onClick="logout"
-        android:text="Logout"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
