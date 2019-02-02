@@ -265,7 +265,7 @@ public class Liste extends AppCompatActivity {
         inflater.inflate(R.menu.example_menu,menu);
         return true;
     }
-
+    // On-Click für Toolbar Menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
