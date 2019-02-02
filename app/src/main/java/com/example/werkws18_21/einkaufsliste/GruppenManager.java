@@ -115,53 +115,7 @@ public class GruppenManager extends AppCompatActivity {
 
     }//onCreate-Ende
 
-    private void deleteMitglied(final int position) {
-        final CollectionReference mitglieder = ListeRef.collection(MITGLIEDER);
-        mitglieder.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot doc : task.getResult()) {
-                        if (mAuth.getCurrentUser().getEmail().equals(Mitglieder.get(position))) {
-                            AlertDialog.Builder adb = new AlertDialog.Builder(GruppenManager.this);
-                            adb.setTitle("Entfernen");
-                            adb.setMessage("Sie sind der Adminsrator.\nSie können sich nicht selbst entfernen.\nLöschen Sie ggf. die Gruppe.");
-                            adb.setNegativeButton("Zurück", null);
-                            adb.show();
-                        }
 
-                        if (doc.get(USER_ID).toString().equals(mAuth.getUid().toString()) && !mAuth.getCurrentUser().getEmail().equals(Mitglieder.get(position))) {
-                            AlertDialog.Builder adb = new AlertDialog.Builder(GruppenManager.this);
-                            adb.setTitle("Entfernen?");
-                            adb.setMessage("Möchten Sie das Mitglied wirklich entfernen?");
-                            adb.setNegativeButton("Zurück", null);
-                            adb.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Query query = mitglieder.whereEqualTo(USER_EMAIL, Mitglieder.get(position));
-                                    query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                for (QueryDocumentSnapshot doc : task.getResult()) {
-                                                    mitglieder.document(doc.getId()).delete();
-                                                }
-                                            }
-                                        }
-                                    }).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                            getMitglieder();
-                                        }
-                                    });
-                                }
-                            });
-                            adb.show();
-                        }
-                    }
-                }
-            }
-        });
-    }
 
     private void getMitglieder() {
         Mitglieder.clear();
@@ -216,6 +170,54 @@ public class GruppenManager extends AppCompatActivity {
 
     public void toListeButton(View view) {
         toListe(ListeRefString);
+    }
+
+    private void deleteMitglied(final int position) {
+        final CollectionReference mitglieder = ListeRef.collection(MITGLIEDER);
+        mitglieder.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                        if (mAuth.getCurrentUser().getEmail().equals(Mitglieder.get(position))) {
+                            AlertDialog.Builder adb = new AlertDialog.Builder(GruppenManager.this);
+                            adb.setTitle("Entfernen");
+                            adb.setMessage("Sie sind der Adminsrator.\nSie können sich nicht selbst entfernen.\nLöschen Sie ggf. die Gruppe.");
+                            adb.setNegativeButton("Zurück", null);
+                            adb.show();
+                        }
+
+                        if (doc.get(USER_ID).toString().equals(mAuth.getUid().toString()) && !mAuth.getCurrentUser().getEmail().equals(Mitglieder.get(position))) {
+                            AlertDialog.Builder adb = new AlertDialog.Builder(GruppenManager.this);
+                            adb.setTitle("Entfernen?");
+                            adb.setMessage("Möchten Sie das Mitglied wirklich entfernen?");
+                            adb.setNegativeButton("Zurück", null);
+                            adb.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Query query = mitglieder.whereEqualTo(USER_EMAIL, Mitglieder.get(position));
+                                    query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                for (QueryDocumentSnapshot doc : task.getResult()) {
+                                                    mitglieder.document(doc.getId()).delete();
+                                                }
+                                            }
+                                        }
+                                    }).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            getMitglieder();
+                                        }
+                                    });
+                                }
+                            });
+                            adb.show();
+                        }
+                    }
+                }
+            }
+        });
     }
 
     public void deleteListe(View view) {
@@ -292,3 +294,4 @@ public class GruppenManager extends AppCompatActivity {
     }
 
 }
+

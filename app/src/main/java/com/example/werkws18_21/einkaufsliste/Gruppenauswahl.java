@@ -1,7 +1,9 @@
 package com.example.werkws18_21.einkaufsliste;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.mbms.StreamingServiceInfo;
@@ -44,6 +46,8 @@ public class Gruppenauswahl extends AppCompatActivity {
     private static final String USER_EMAIL = "User-Email";
     EditText eTNeueListe;
     ProgressBar progressBar;
+    TextView tvEmail;
+    Button btnLogOut;
     private FirebaseAuth mAuth;
     //db als Instanz für die Datenbank im firestore
     FirebaseFirestore db;
@@ -63,7 +67,10 @@ public class Gruppenauswahl extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressbar);
         ListView groupList = findViewById(R.id.groupList);
+        progressBar.setVisibility(View.VISIBLE);
 
+        tvEmail = findViewById(R.id.tvEmail);
+        btnLogOut = findViewById(R.id.btnLogOut);
         eTNeueListe = findViewById(R.id.eTNeueListe);
         //db als Instanz für die Datenbank firestore
         db = FirebaseFirestore.getInstance();
@@ -93,6 +100,7 @@ public class Gruppenauswahl extends AppCompatActivity {
         groupList.setAdapter(adapter);
 
         getListen();
+        showEmail();
 
 
         groupList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -123,6 +131,29 @@ public class Gruppenauswahl extends AppCompatActivity {
         });
 
     }
+
+    private void showEmail() {
+        String Email = mAuth.getCurrentUser().getEmail();
+        tvEmail.setText(Email);
+    }
+
+    public void logout(View view){
+        AlertDialog.Builder adb = new AlertDialog.Builder(Gruppenauswahl.this);
+        adb.setTitle("Logout");
+        adb.setMessage("Möchten Sie sich wirklich ausloggen?");
+        adb.setNegativeButton("Zurück", null);
+        adb.setPositiveButton("Logout", new AlertDialog.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                mAuth.signOut();
+                toMainActiviy();
+            }
+            });
+        adb.show();
+
+    }
+
+
+
     //bis jetzt: schreibt alle Listen-IDs in mListIds
     private void getListen() {
         mListIds.clear();
@@ -156,6 +187,7 @@ public class Gruppenauswahl extends AppCompatActivity {
                                         });
                                     }
                                 }
+                                progressBar.setVisibility(View.GONE);
                             }
                         });
                     }
@@ -241,6 +273,14 @@ public class Gruppenauswahl extends AppCompatActivity {
                 new Intent(Gruppenauswahl.this, Liste.class);
         toGroup.putExtra(LISTEN_REFERENZ, ListeRefString);
         startActivity(toGroup);
+    }
+
+    private void toMainActiviy() {
+        String intentText = "New Activity";
+        Intent toGroupSet =
+                new Intent(Gruppenauswahl.this, MainActivity.class);
+        toGroupSet.putExtra("NEXTACTIVITY", intentText);
+        startActivity(toGroupSet);
     }
 
 }
