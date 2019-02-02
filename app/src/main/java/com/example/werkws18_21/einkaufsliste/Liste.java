@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -70,6 +73,11 @@ public class Liste extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_liste);
+
+        // Toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
 
         //Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         //setSupportActionBar(myToolbar);
@@ -249,6 +257,36 @@ public class Liste extends AppCompatActivity {
             }
         });
     }//onCreate-Ende
+
+    //Menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.example_menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.item1:
+                String intentText = "New Activity";
+                Intent toGroupSet =
+                        new Intent(Liste.this, Gruppenauswahl.class);
+                toGroupSet.putExtra("NEXTACTIVITY", intentText);
+                startActivity(toGroupSet);
+                return true;
+            case R.id.item2 :
+                String intentText1 = "New Activity";
+                Intent toGroup =
+                        new Intent(Liste.this, GruppenManager.class);
+                toGroup.putExtra(LISTEN_REFERENZ, ListeRefString);
+                startActivity(toGroup);
+                return true;
+            default:  return super.onOptionsItemSelected(item);
+        }
+
+    }
 
     private void getListenName() {
         ListeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
