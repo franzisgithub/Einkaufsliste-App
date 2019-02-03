@@ -12,7 +12,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="Login"
-        android:textSize="40sp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="45sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -67,7 +69,9 @@
         android:text="Account erstellen"
         app:layout_constraintBottom_toTopOf="@+id/button2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/buttonshape"
+        android:textColor="#FFFFFF"/>
 
     <Button
         android:id="@+id/button2"
@@ -82,7 +86,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.926" />
+        app:layout_constraintVertical_bias="0.926"
+        android:background="@drawable/buttonshape"
+        android:textColor="#FFFFFF"/>
 
     <Button
         android:id="@+id/button4"
@@ -98,7 +104,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/eT_Passwort"
-        app:layout_constraintVertical_bias="0.037" />
+        app:layout_constraintVertical_bias="0.037"
+        android:background="@drawable/buttonshape"
+        android:textColor="#FFFFFF"/>
 
     <ProgressBar
         android:id="@+id/progressbar"

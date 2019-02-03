@@ -11,12 +11,14 @@
         android:layout_width="match_parent"
         android:layout_height="33dp"
         android:layout_marginBottom="8dp"
-        android:background="?attr/colorPrimaryDark"
+        android:background="@drawable/toolshape"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:textColor="#FFFFFF"
+        />
 
     <ProgressBar
         android:id="@+id/progressbar"
@@ -45,7 +47,9 @@
         android:onClick="NeueListeButton"
         android:text="Liste hinzufügen"
         app:layout_constraintStart_toEndOf="@+id/eTNeueListe"
-        app:layout_constraintTop_toBottomOf="@+id/my_toolbar1" />
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar1"
+        android:background="@drawable/buttonshape"
+        android:textColor="#FFFFFF"/>
 
     <ListView
         android:id="@+id/groupList"
@@ -54,6 +58,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:background="@color/colorAccent"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

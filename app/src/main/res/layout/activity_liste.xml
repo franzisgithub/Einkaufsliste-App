@@ -11,12 +11,14 @@
         android:layout_width="match_parent"
         android:layout_height="33dp"
         android:layout_marginBottom="8dp"
-        android:background="?attr/colorPrimaryDark"
+        android:background="@drawable/toolshape"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:textColor="#FFFFFF"
+        />
 
 
     <android.support.constraint.Guideline
@@ -55,11 +57,19 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:background="@drawable/buttonshape"
+        android:textColor="#FFFFFF"
         android:onClick="aktualisierenButton"
+        android:shadowColor="#A8A8A8"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="5"
         android:text="Aktualisieren"
+        android:textSize="14sp"
         app:layout_constraintEnd_toStartOf="@+id/button3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ListView2" />
+
 
     <ListView
         android:id="@+id/ListView2"
@@ -102,12 +112,15 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:background="@drawable/buttonshape"
         android:text="Hinzufügen"
         app:layout_constraintBottom_toTopOf="@+id/textView4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/Eingabe" />
+        app:layout_constraintTop_toBottomOf="@+id/Eingabe"
+        android:textColor="#FFFFFF"
+        />
 
     <TextView
         android:id="@+id/textView4"
@@ -134,7 +147,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:textAlignment="center"
-        android:textSize="18sp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintHorizontal_bias="0.0"
@@ -162,11 +176,14 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:background="@drawable/buttonshape"
         android:onClick="toGruppenauswahl"
         android:text="Listen"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ListView2" />
+        app:layout_constraintTop_toBottomOf="@+id/ListView2"
+        android:textColor="#FFFFFF"
+        />
 
     <Button
         android:id="@+id/button6"
@@ -175,10 +192,13 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:background="@drawable/buttonshape"
         android:onClick="toGruppenManager"
         android:text="Einstellungen"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button3"
-        app:layout_constraintTop_toBottomOf="@+id/ListView2" />
+        app:layout_constraintTop_toBottomOf="@+id/ListView2"
+        android:textColor="#FFFFFF"
+        />
 
 </android.support.constraint.ConstraintLayout>
