@@ -7,8 +7,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -75,7 +73,7 @@ public class Liste extends AppCompatActivity {
         setContentView(R.layout.activity_liste);
 
         // Toolbar
-        Toolbar toolbar = findViewById(R.id.my_toolbar);
+        Toolbar toolbar = findViewById(R.id.my_toolbar1);
         setSupportActionBar(toolbar);
 
         //Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -280,6 +278,9 @@ public class Liste extends AppCompatActivity {
                         new Intent(Liste.this, GruppenManager.class);
                 toGroup.putExtra(LISTEN_REFERENZ, ListeRefString);
                 startActivity(toGroup);
+                return true;
+            case R.id.item3:
+                //TODO logout funktion
                 return true;
             default:  return super.onOptionsItemSelected(item);
         }
