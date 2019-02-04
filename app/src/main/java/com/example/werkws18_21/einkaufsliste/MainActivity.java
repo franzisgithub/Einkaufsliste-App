@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
         EditText name = findViewById(R.id.eT_Email);
         EditText passwort = findViewById(R.id.eT_Passwort);
         Button buttonAcc = findViewById(R.id.button);
-        Button buttonP = findViewById(R.id.button2);
         Button login = findViewById(R.id.button4);
         progressBar = findViewById(R.id.progressbar);
 
