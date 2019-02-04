@@ -187,7 +187,6 @@ public class Liste extends AppCompatActivity {
                 if (eingabe.getText().toString().isEmpty()) {
                     Toast.makeText(Liste.this, "Geben Sie einen Text ein!", Toast.LENGTH_LONG).show();
                     eingabe.requestFocus();
-                    //progressBar.setVisibility(View.GONE);
                     return;
                 }
 

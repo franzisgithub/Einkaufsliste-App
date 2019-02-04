@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (s_Passwort.length() < 6) {
-            Toast.makeText(MainActivity.this, "Passwort muss mmindestens 6 Zeichen umfassen", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Passwort muss mindestens 6 Zeichen umfassen", Toast.LENGTH_LONG).show();
             eT_Password.requestFocus();
             return;
         }
