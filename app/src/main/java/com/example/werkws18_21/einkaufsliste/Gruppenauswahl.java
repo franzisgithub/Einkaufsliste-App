@@ -209,7 +209,18 @@ public class Gruppenauswahl extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot doc : task.getResult()) {
-                        ListeExistiertBereits = true;
+                        Query query = listen.document(doc.getId()).collection(MITGLIEDER).whereEqualTo(USER_EMAIL,mAuth.getCurrentUser().getEmail());
+                        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if(task.isSuccessful()){
+                                    for(QueryDocumentSnapshot doc : task.getResult()){
+                                        ListeExistiertBereits = true;
+                                    }
+                                }
+                            }
+                        });
+
                     }
                 }
             }
