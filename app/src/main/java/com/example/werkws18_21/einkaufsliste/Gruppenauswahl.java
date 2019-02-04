@@ -265,6 +265,7 @@ public class Gruppenauswahl extends AppCompatActivity {
                 adb.setPositiveButton("Logout", new AlertDialog.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         mAuth.signOut();
+
                         toMainActiviy();
                     }
                 });

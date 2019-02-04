@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    //erstellt User, führt anchließend loginUer aus
+    //erstellt User, führt anchließend loginUser aus
     public void createUser() {
 
         //edit Text finden
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     Toast.makeText(MainActivity.this, "Registrierung erfolgreich!", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "User created");
-                    FirebaseUser user = mAuth.getCurrentUser();
+                    //FirebaseUser user = mAuth.getCurrentUser();
                 } else {
                     if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                         Toast.makeText(MainActivity.this, "Email ist berreits registriert!", Toast.LENGTH_SHORT).show();
@@ -143,7 +143,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        toGruppenauswahl();
+        progressBar.setVisibility(View.GONE);
+        loginUser();
     }
 
     //beim klick auf login
