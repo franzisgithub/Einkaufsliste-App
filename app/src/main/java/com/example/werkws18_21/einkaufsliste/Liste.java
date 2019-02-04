@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -66,6 +67,7 @@ public class Liste extends AppCompatActivity {
     private static final String TAG = "MyTag";
     //db als Instanz für die Datenbank im firestore
     FirebaseFirestore db;
+    FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +102,7 @@ public class Liste extends AppCompatActivity {
 
         //db als Instanz für die Datenbank im firestore
         db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
         Intent toGroup = getIntent();
         if (toGroup.getExtras() != null) {
@@ -226,7 +229,6 @@ public class Liste extends AppCompatActivity {
             }
         });
         //Funktion zum entfernen von Items
-        //TODO: MyDataObject ist die Datenbank musst du dann noch umbenennen und einfügen
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
@@ -280,7 +282,17 @@ public class Liste extends AppCompatActivity {
                 startActivity(toGroup);
                 return true;
             case R.id.item3:
-                //TODO logout funktion
+                AlertDialog.Builder adb = new AlertDialog.Builder(Liste.this);
+                adb.setTitle("Logout");
+                adb.setMessage("Möchten Sie sich wirklich ausloggen?");
+                adb.setNegativeButton("Zurück", null);
+                adb.setPositiveButton("Logout", new AlertDialog.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        mAuth.signOut();
+                        toMainActiviy();
+                    }
+                });
+                adb.show();
                 return true;
             default:  return super.onOptionsItemSelected(item);
         }
@@ -385,9 +397,7 @@ public class Liste extends AppCompatActivity {
         });
     }
 
-    private void deleteAllItems() {
-//TODO
-    }
+
 
     public void toGruppenauswahl(View view) {
         String intentText = "New Activity";
@@ -403,6 +413,13 @@ public class Liste extends AppCompatActivity {
                 new Intent(Liste.this, GruppenManager.class);
         toGroup.putExtra(LISTEN_REFERENZ, ListeRefString);
         startActivity(toGroup);
+    }
+    private void toMainActiviy() {
+        String intentText = "New Activity";
+        Intent toGroupSet =
+                new Intent(Liste.this, MainActivity.class);
+        toGroupSet.putExtra("NEXTACTIVITY", intentText);
+        startActivity(toGroupSet);
     }
 
     public void aktualisierenButton(View view){

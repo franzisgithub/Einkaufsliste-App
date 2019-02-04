@@ -304,7 +304,17 @@ public class GruppenManager extends AppCompatActivity {
                 Toast.makeText(GruppenManager.this, "Sie sind bereits in den Settings", Toast.LENGTH_LONG).show();
                 return true;
             case R.id.item3:
-                //TODO logout funktion
+                AlertDialog.Builder adb = new AlertDialog.Builder(GruppenManager.this);
+                adb.setTitle("Logout");
+                adb.setMessage("Möchten Sie sich wirklich ausloggen?");
+                adb.setNegativeButton("Zurück", null);
+                adb.setPositiveButton("Logout", new AlertDialog.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        mAuth.signOut();
+                        toMainActiviy();
+                    }
+                });
+                adb.show();
                 return true;
 
             default:  return super.onOptionsItemSelected(item);
@@ -326,6 +336,13 @@ public class GruppenManager extends AppCompatActivity {
                 new Intent(GruppenManager.this, Liste.class);
         toGroup.putExtra(LISTEN_REFERENZ, ListeRefString);
         startActivity(toGroup);
+    }
+    private void toMainActiviy() {
+        String intentText = "New Activity";
+        Intent toGroupSet =
+                new Intent(GruppenManager.this, MainActivity.class);
+        toGroupSet.putExtra("NEXTACTIVITY", intentText);
+        startActivity(toGroupSet);
     }
 
 }

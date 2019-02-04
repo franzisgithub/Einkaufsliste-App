@@ -1,7 +1,9 @@
 package com.example.werkws18_21.einkaufsliste;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -48,6 +50,7 @@ public class Gruppenauswahl extends AppCompatActivity {
     private static final String USER_EMAIL = "User-Email";
     EditText eTNeueListe;
     ProgressBar progressBar;
+    TextView tvEmail;
     private FirebaseAuth mAuth;
     //db als Instanz für die Datenbank im firestore
     FirebaseFirestore db;
@@ -60,6 +63,7 @@ public class Gruppenauswahl extends AppCompatActivity {
     private Boolean ListeExistiertBereits;
 
     ArrayAdapter<String> adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +75,8 @@ public class Gruppenauswahl extends AppCompatActivity {
         progressBar = findViewById(R.id.progressbar);
         ListView groupList = findViewById(R.id.groupList);
 
+        progressBar.setVisibility(View.VISIBLE);
+        tvEmail = findViewById(R.id.tvEmail);
         eTNeueListe = findViewById(R.id.eTNeueListe);
         //db als Instanz für die Datenbank firestore
         db = FirebaseFirestore.getInstance();
@@ -80,12 +86,12 @@ public class Gruppenauswahl extends AppCompatActivity {
         UserEmail = mAuth.getCurrentUser().getEmail();
         // Gruppen / Listen
         groupList1 = new ArrayList<>();
-        adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, groupList1){
+        adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, groupList1) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
 
                 View view = super.getView(position, convertView, parent);
-                TextView textView5=(TextView) view.findViewById(android.R.id.text1);
+                TextView textView5 = (TextView) view.findViewById(android.R.id.text1);
                 textView5.setTextSize(20);
                 ViewGroup.LayoutParams layoutparams = view.getLayoutParams();
 
@@ -96,9 +102,10 @@ public class Gruppenauswahl extends AppCompatActivity {
 
                 return view;
             }
-        };;
+        };
+        ;
         groupList.setAdapter(adapter);
-
+        getEmail();
         getListen();
 
 
@@ -111,8 +118,8 @@ public class Gruppenauswahl extends AppCompatActivity {
                 listenQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()){
-                            for(QueryDocumentSnapshot doc : task.getResult()){
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot doc : task.getResult()) {
                                 String ListeRefString = doc.getId().toString();
                                 toListe(ListeRefString);
                             }
@@ -130,6 +137,12 @@ public class Gruppenauswahl extends AppCompatActivity {
         });
 
     }
+
+    private void getEmail() {
+        String Email =  mAuth.getCurrentUser().getEmail();
+        tvEmail.setText(Email);
+    }
+
     //bis jetzt: schreibt alle Listen-IDs in mListIds
     private void getListen() {
         mListIds.clear();
@@ -169,6 +182,7 @@ public class Gruppenauswahl extends AppCompatActivity {
                 }
             }
         });
+        progressBar.setVisibility(View.GONE);
     }
 
     public void NeueListeButton(View view) throws InterruptedException {
@@ -196,7 +210,7 @@ public class Gruppenauswahl extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot doc : task.getResult()) {
                         ListeExistiertBereits = true;
-                        }
+                    }
                 }
             }
         }).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -234,19 +248,30 @@ public class Gruppenauswahl extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu1,menu);
+        inflater.inflate(R.menu.menu1, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch (item.getItemId()){
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.item1:
-                //TODO logout funktion
+                AlertDialog.Builder adb = new AlertDialog.Builder(Gruppenauswahl.this);
+                adb.setTitle("Logout");
+                adb.setMessage("Möchten Sie sich wirklich ausloggen?");
+                adb.setNegativeButton("Zurück", null);
+                adb.setPositiveButton("Logout", new AlertDialog.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        mAuth.signOut();
+                        toMainActiviy();
+                    }
+                });
+                adb.show();
                 return true;
-            default:  return super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
         }
 
     }
@@ -266,6 +291,14 @@ public class Gruppenauswahl extends AppCompatActivity {
                 new Intent(Gruppenauswahl.this, Liste.class);
         toGroup.putExtra(LISTEN_REFERENZ, ListeRefString);
         startActivity(toGroup);
+    }
+
+    private void toMainActiviy() {
+        String intentText = "New Activity";
+        Intent toGroupSet =
+                new Intent(Gruppenauswahl.this, MainActivity.class);
+        toGroupSet.putExtra("NEXTACTIVITY", intentText);
+        startActivity(toGroupSet);
     }
 
 }
