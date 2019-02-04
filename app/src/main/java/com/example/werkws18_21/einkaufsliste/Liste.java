@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -182,6 +183,14 @@ public class Liste extends AppCompatActivity {
         adden.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Überprüfen, ob etwas in die TextView geschrieben wurde
+                if (eingabe.getText().toString().isEmpty()) {
+                    Toast.makeText(Liste.this, "Geben Sie einen Text ein!", Toast.LENGTH_LONG).show();
+                    eingabe.requestFocus();
+                    //progressBar.setVisibility(View.GONE);
+                    return;
+                }
+
                 itemList.add(eingabe.getText().toString());
                 adapter.notifyDataSetChanged();
                 eingabe.getText().clear();
