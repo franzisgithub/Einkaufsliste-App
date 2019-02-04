@@ -257,7 +257,7 @@ public class Gruppenauswahl extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.item1:
+            case R.id.item3:
                 AlertDialog.Builder adb = new AlertDialog.Builder(Gruppenauswahl.this);
                 adb.setTitle("Logout");
                 adb.setMessage("Möchten Sie sich wirklich ausloggen?");
