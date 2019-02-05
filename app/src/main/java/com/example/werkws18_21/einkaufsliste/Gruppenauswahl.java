@@ -112,20 +112,35 @@ public class Gruppenauswahl extends AppCompatActivity {
         groupList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                final int position1 = position;
+
                 final CollectionReference listen = db.collection(LISTEN_COLLECTION);
-                Query listenQuery = listen.whereEqualTo(LISTEN_NAME, groupList1.get(position1));
+                Query listenQuery = listen.whereEqualTo(LISTEN_NAME,groupList1.get(position));
                 listenQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot doc : task.getResult()) {
-                                String ListeRefString = doc.getId().toString();
-                                toListe(ListeRefString);
+                        if(task.isSuccessful()){
+                            for(final QueryDocumentSnapshot doc : task.getResult()){
+                                final Query query2 = listen.document(doc.getId()).collection(MITGLIEDER).whereEqualTo(USER_EMAIL,mAuth.getCurrentUser().getEmail());
+                                query2.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if(task.isSuccessful()){
+                                            for(QueryDocumentSnapshot doc1 : task.getResult()){
+                                                String x = doc.getId();
+                                                toListe(x);
+                                            }
+                                        }
+                                    }
+                                });
                             }
                         }
                     }
                 });
+
+
+
+
+
 
                 /*
                 itemList.add(beispielList.get(position));
